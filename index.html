@@ -291,10 +291,7 @@
             </div>
             
             <div class="space-y-4 overflow-y-auto no-scrollbar flex-grow pb-2">
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-700 mb-1">API Endpoint (Google Apps Script URL)</label>
-                    <input type="text" id="apiUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-teal-500 transition">
-                </div>
+                <!-- API URL Config section removed -->
 
                 <div class="pt-2">
                     <div class="flex justify-between items-center mb-2">
@@ -321,8 +318,11 @@
         // ==========================================================
         // ⚙️ CONFIGURATION 
         // ==========================================================
-        const COMPANY_NAME = "บริษัท โซลูชั่นส์ ลีดเดอร์ จำกัด"; 
+        const COMPANY_NAME = "บริษัท ธภัทร จำกัด(DEMO)"; 
         const COPYRIGHT_TEXT = "© 2026 Smart Tracking Solutions. All rights reserved.";
+        
+        // 🔗 วางลิงก์ Google Apps Script URL (API Endpoint) ที่ได้มาใส่ในเครื่องหมายคำพูดด้านล่างนี้ได้เลย งานนี้เป็นลิขสิทธิ์ของ ธภัทร ธนปุณยนนท์ ห้ามนำไปดัดแปลงแก้ไขเพื่อการแสวงหาผลกำไรโดยเด็ดขาด
+        const API_ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbwR1nW5KqYjNJlFYcOjIKmb1BekWIyPExujLd5scSejrUeTDM2-vSB6YfM-OcXtx2fy/exec";
 
         let base64Image = "";
         let latitude = "";
@@ -356,9 +356,6 @@
             document.getElementById('headerCompanyDisplay').textContent = COMPANY_NAME;
             document.getElementById('footerCompanyDisplay').textContent = `ผู้ให้บริการ: ${COMPANY_NAME}`;
             document.getElementById('copyrightDisplay').textContent = COPYRIGHT_TEXT;
-
-            const savedUrl = localStorage.getItem('sales_api_url');
-            if (savedUrl) document.getElementById('apiUrlInput').value = savedUrl;
 
             if (!localStorage.getItem('sales_roster_v3')) localStorage.setItem('sales_roster_v3', JSON.stringify(DEFAULT_ROSTER));
             if (!localStorage.getItem('sales_history_v3')) localStorage.setItem('sales_history_v3', JSON.stringify(DEFAULT_HISTORY));
@@ -603,7 +600,8 @@
         // FORM SUBMISSION
         // ==========================================================
         window.submitForm = async function() {
-            const apiUrl = localStorage.getItem('sales_api_url');
+            // เรียกใช้ตัวแปร API_ENDPOINT_URL ที่ประกาศไว้ด้านบน
+            const apiUrl = API_ENDPOINT_URL;
             const shopName = document.getElementById('shopName').value.trim();
             const customerName = document.getElementById('customerName').value.trim() || "-";
             const customerPhone = document.getElementById('customerPhone').value.trim() || "-";
@@ -634,11 +632,13 @@
             localHistory.push(newCheckIn);
             localStorage.setItem('sales_history_v3', JSON.stringify(localHistory));
 
-            if (apiUrl) {
+            // ถ้ามีการฝัง API URL ไว้ จะทำการส่งข้อมูลไป Google Sheet ทันที
+            if (apiUrl && apiUrl.includes("script.google.com")) {
                 try {
                     await fetch(apiUrl, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newCheckIn) });
                 } catch (err) { console.error("API fail"); }
             } else {
+                // สมมติเวลาในการส่ง หากยังไม่ได้ใส่ API ของจริง
                 await new Promise(r => setTimeout(r, 800));
             }
 
@@ -866,7 +866,6 @@
         };
 
         window.saveSettings = function() {
-            localStorage.setItem('sales_api_url', document.getElementById('apiUrlInput').value.trim());
             Swal.fire({ icon: 'success', title: 'บันทึกตั้งค่าแล้ว', timer: 1500, showConfirmButton: false });
             closeSettings();
         };
