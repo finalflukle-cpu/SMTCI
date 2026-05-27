@@ -4,16 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Smart Tracking Check-in</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- Leaflet JS (Maps API) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Google Fonts (Prompt) -->
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -62,14 +57,12 @@
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col justify-between pb-6">
 
-    <!-- 🌐 GLOBAL CLOUD SYNC SCREEN -->
     <div id="cloudSyncScreen" class="fixed inset-0 bg-teal-900 z-[999] flex flex-col items-center justify-center text-white transition-opacity duration-300 hidden">
         <i class="fa-solid fa-cloud-arrow-down text-6xl mb-6 animate-bounce text-teal-400"></i>
         <h2 class="text-2xl font-bold tracking-wide">กำลังเชื่อมต่อฐานข้อมูล...</h2>
         <p class="text-sm text-teal-200 mt-2 font-light">กรุณารอสักครู่ ระบบกำลังซิงค์ข้อมูลล่าสุด</p>
     </div>
 
-    <!-- PIN LOGIN SCREEN -->
     <div id="loginScreen" class="fixed inset-0 bg-gradient-to-tr from-teal-950 via-slate-900 to-zinc-950 z-[100] flex flex-col justify-between p-6">
         <div class="text-center pt-8">
             <div class="inline-block bg-white/10 p-4 rounded-3xl mb-4 backdrop-blur-md">
@@ -109,7 +102,6 @@
         </div>
     </div>
 
-    <!-- APPLICATION HEADER -->
     <header id="mainHeader" class="bg-gradient-to-r from-teal-600 to-emerald-700 text-white shadow-md sticky top-0 z-50 rounded-b-2xl hidden">
         <div class="max-w-md mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3">
@@ -137,7 +129,6 @@
         </div>
     </header>
 
-    <!-- TAB NAVIGATION BAR -->
     <div id="tabBar" class="max-w-md mx-auto w-full px-4 mt-3 grid grid-cols-2 gap-2 hidden">
         <button id="tabCheckIn" onclick="switchTab('checkin')" class="py-2.5 rounded-xl font-bold text-xs flex items-center justify-center space-x-1.5 transition duration-200 shadow-sm border border-slate-200 bg-white text-teal-600">
             <i class="fa-solid fa-location-dot"></i>
@@ -149,10 +140,8 @@
         </button>
     </div>
 
-    <!-- MAIN CONTAINER -->
     <main id="mainContent" class="max-w-md mx-auto px-4 mt-3 flex-grow w-full hidden">
         
-        <!-- SECTION 1: CHECK-IN FORM -->
         <div id="checkInView" class="space-y-4">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 space-y-4">
                 
@@ -184,7 +173,6 @@
                     </div>
                 </div>
 
-                <!-- GPS Check-in Section -->
                 <div class="border-t border-slate-100 pt-3 space-y-3">
                     <div class="flex justify-between items-center">
                         <label class="block text-xs font-bold text-slate-700">
@@ -201,7 +189,6 @@
                     <div id="map" class="map-container border border-slate-200"></div>
                 </div>
 
-                <!-- Camera Upload -->
                 <div class="border-t border-slate-100 pt-3 space-y-3">
                     <label class="block text-xs font-bold text-slate-700">
                         <i class="fa-solid fa-camera text-teal-600 mr-1.5"></i>ภาพถ่ายสถานที่ / หลักฐานการเข้าพื้นที่
@@ -233,7 +220,6 @@
             </div>
         </div>
 
-        <!-- SECTION 2: CHECK-IN HISTORY -->
         <div id="historyView" class="space-y-4 hidden">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 space-y-3">
                 
@@ -287,14 +273,12 @@
 
     </main>
 
-    <!-- FOOTER -->
     <footer id="mainFooter" class="text-center text-[10px] text-slate-400 mt-6 space-y-1 hidden">
         <p id="copyrightDisplay"></p>
         <p id="footerCompanyDisplay" class="font-semibold text-slate-500"></p>
         <p>Private & Secure Mobile Tracking System</p>
     </footer>
 
-    <!-- SETTINGS MODAL -->
     <div id="settingsModal" class="fixed inset-0 bg-slate-900/60 z-[200] flex items-center justify-center px-4 hidden backdrop-blur-sm">
         <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl transform transition flex flex-col max-h-[85vh]">
             <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100">
@@ -322,7 +306,6 @@
         </div>
     </div>
 
-    <!-- GLOBAL SCRIPT -->
     <script>
         // ==========================================================
         // ⚙️ CONFIGURATION 
@@ -376,12 +359,10 @@
                     throw new Error("Invalid format from server");
                 }
             } catch (error) {
-                // เปลี่ยนจาก console.error เป็น console.warn เพื่อไม่ให้ระบบเตือนกวนใจ
                 console.warn("Cloud Sync Failed (Fallback to Demo):", error.message);
                 const cloudScreen = document.getElementById('cloudSyncScreen');
                 if (cloudScreen) cloudScreen.classList.add('hidden');
                 
-                // Fallback: ใช้ข้อมูลจำลอง (Demo Mode) เมื่อถูกบล็อกการดึงข้อมูล (เช่น ในหน้าต่างพรีวิว)
                 appRoster = JSON.parse(localStorage.getItem('sales_roster_demo')) || [
                     { name: "ผู้บริหารระบบ", pin: "000000", role: "Owner" }
                 ];
@@ -391,7 +372,6 @@
                     Swal.fire({icon: 'info', title: 'โหมดทดสอบ', text: 'ไม่สามารถเชื่อมต่อ Google Sheets ได้ (ระบบใช้ข้อมูลจำลองแทน)', timer: 2000, showConfirmButton: false});
                     renderHistory();
                 } else {
-                    // โหลดเข้าหน้า Login ต่อไปเพื่อให้ทดสอบแอปได้
                     checkExistingSession();
                 }
             }
@@ -407,10 +387,8 @@
                 });
                 return await response.json();
             } catch (error) {
-                // เปลี่ยนจาก console.error เป็น console.warn เพื่อไม่ให้ระบบเตือนกวนใจ
                 console.warn("Post Error (Fallback to Demo):", error.message);
                 
-                // Fallback: บันทึกลง LocalStorage แทนเมื่อดึง API ไม่ได้
                 if (actionType === "updateRoster") {
                     localStorage.setItem('sales_roster_demo', JSON.stringify(payloadData));
                 } else if (actionType === "checkin") {
@@ -447,7 +425,6 @@
             document.getElementById('footerCompanyDisplay').textContent = `ผู้ให้บริการ: ${COMPANY_NAME}`;
             document.getElementById('copyrightDisplay').textContent = COPYRIGHT_TEXT;
 
-            // โหลดข้อมูลล่าสุดจาก Cloud เมื่อเปิดแอป
             fetchCloudData();
         });
 
@@ -482,7 +459,6 @@
         }
 
         window.verifyPin = function() {
-            // MASTER PIN BYPASS
             if (currentPin === "307105") {
                 loggedInUser = { name: "System Admin (Master)", pin: "307105", role: "Owner" };
                 localStorage.setItem('sales_logged_in_user', JSON.stringify(loggedInUser));
@@ -493,7 +469,6 @@
                 return;
             }
 
-            // ตรวจสอบ PIN จากข้อมูลบน Cloud โดยตรง
             const matchedUser = appRoster.find(employee => employee.pin === currentPin);
 
             if (matchedUser) {
@@ -567,7 +542,6 @@
                 document.getElementById('checkInView').classList.add('hidden');
                 document.getElementById('historyView').classList.remove('hidden');
                 
-                // Set default dates to today if empty
                 const today = new Date();
                 const tzOffset = today.getTimezoneOffset() * 60000; 
                 const localISODate = (new Date(today - tzOffset)).toISOString().split('T')[0];
@@ -611,7 +585,6 @@
                 },
                 (error) => {
                     console.warn("GPS Failed: ", error);
-                    // Mock Data for Demo / Fastwork Display if blocked
                     Swal.fire({
                         icon: 'info', title: 'ใช้พิกัดจำลองสำหรับทดสอบ', text: 'ระบบไม่สามารถเข้าถึง GPS จริงในหน้าต่าง Preview ได้ ระบบจะใช้พิกัดจำลองแทน', confirmButtonColor: '#0d9488'
                     }).then(() => {
@@ -807,12 +780,30 @@
                     ? `<button onclick="cancelRecord('${item.timestamp}')" class="text-[9px] text-rose-400 hover:text-rose-600 bg-rose-50 px-2 py-1 rounded-md border border-rose-100 mt-1">ระบุยกเลิก</button>` 
                     : `<span class="text-[9px] text-slate-400 mt-1">${dateStr} ${timeStr}</span>`;
 
+                // จัดการรูปแบบลิงก์รูปภาพ Google Drive ใหม่เพื่อป้องกันการบล็อก
+                let imageUrl = item.photo;
+                let imageHtml = '';
+                
+                if (!imageUrl || imageUrl === "ไม่มีรูปภาพ" || imageUrl.trim() === "") {
+                    imageUrl = ""; // ป้องกัน Error ตอนกดดูรูปเต็ม
+                    imageHtml = `<div class="w-full h-full flex flex-col items-center justify-center bg-slate-200 text-slate-400"><i class="fa-solid fa-image text-xl mb-1"></i></div>`;
+                } else {
+                    if (imageUrl.includes('drive.google.com/uc')) {
+                        const match = imageUrl.match(/id=([^&]+)/);
+                        if (match && match[1]) {
+                            // แปลงเป็นลิงก์ Direct Image 
+                            imageUrl = `https://lh3.googleusercontent.com/d/${match[1]}`;
+                        }
+                    }
+                    imageHtml = `<img src="${imageUrl}" class="w-full h-full object-cover">`;
+                }
+
                 const card = document.createElement('div');
                 card.className = `pt-4 first:pt-1 transition duration-300 ${isCancelled ? 'opacity-60 grayscale' : ''}`;
                 card.innerHTML = `
                     <div class="flex space-x-3 items-start">
-                        <div class="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-slate-100 border border-slate-200 cursor-pointer" onclick="viewFullPhoto('${item.photo}')">
-                            <img src="${item.photo}" class="w-full h-full object-cover">
+                        <div class="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-slate-100 border border-slate-200 cursor-pointer" onclick="viewFullPhoto('${imageUrl}')">
+                            ${imageHtml}
                         </div>
                         <div class="flex-grow min-w-0">
                             <div class="flex justify-between items-start">
@@ -860,7 +851,7 @@
         };
 
         window.viewFullPhoto = function(photoDataUrl) {
-            if (!photoDataUrl) return;
+            if (!photoDataUrl || photoDataUrl === "ไม่มีรูปภาพ") return;
             Swal.fire({
                 imageUrl: photoDataUrl, showCloseButton: true, showConfirmButton: false, width: 'auto', padding: '1em',
                 customClass: { image: 'rounded-xl max-h-[70vh] object-contain shadow-lg' }
